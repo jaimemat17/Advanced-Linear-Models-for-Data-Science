@@ -1764,6 +1764,11 @@ multiplication</a>
 <ul>
 <li><a href="#example-1" id="toc-example-1">Example</a></li>
 </ul></li>
+<li><a href="#variance-via-matrix-multiplication" id="toc-variance-via-matrix-multiplication">Variance via matrix
+multiplication</a>
+<ul>
+<li><a href="#example-2" id="toc-example-2">Example</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -1905,12 +1910,60 @@ apply(xc,1,mean)</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+</div>
+<div id="variance-via-matrix-multiplication" class="section level2">
+<h2>Variance via matrix multiplication</h2>
+<p><span class="math display">\[ S^2 = \frac{\sum(y_i-\bar{y})^2}{n-1} =
+\frac{\lVert y - \bar{y}J_n \rVert^2}{n-1} =
+\frac{1}{n-1}\tilde{y}^t\tilde{y} \]</span> where <span class="math inline">\(\tilde{y}=(I -
+J_n(J_n^tJ_n)^{-1}J_n^t)y\)</span></p>
+<p>Then <span class="math display">\[ S^2 = y^t(I - J_n(J_n^tJ_n)y
+\]</span></p>
+<p>If we do it with <span class="math inline">\(X_{n \times p}\)</span>
+then <span class="math display">\[ X^t(I - J_n(J_n^tJ_n)X =
+\tilde{X}^t\tilde{X} \]</span></p>
+<p>and $^t is the so called variance-covariance matrix.</p>
+<div id="example-2" class="section level3">
+<h3>Example</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueSA9IG10Y2FycyRtcGdcbnggPSBjYmluZCgxLG10Y2FycyR3dCwgbXRjYXJzJGhwKVxubiA9IG5yb3coeClcbkkgPSBkaWFnKHJlcCgxLG4pKVxuSCA9IG1hdHJpeCgxLG4sbikvblxucm91bmQodCh4KSAlKiUgKEktSCkgJSolIHggLyAobi0xKSw2KVxuYGBgIn0= -->
+<pre class="r"><code>y = mtcars$mpg
+x = cbind(1,mtcars$wt, mtcars$hp)
+n = nrow(x)
+I = diag(rep(1,n))
+H = matrix(1,n,n)/n
+round(t(x) %*% (I-H) %*% x / (n-1),6)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdICAgICAgWywyXSAgICAgICBbLDNdXG5bMSxdICAgIDAgIDAuMDAwMDAwICAgIDAuMDAwMDBcblsyLF0gICAgMCAgMC45NTczNzkgICA0NC4xOTI2NlxuWzMsXSAgICAwIDQ0LjE5MjY2MSA0NzAwLjg2Njk0XG4ifQ== -->
+<pre><code>     [,1]      [,2]       [,3]
+[1,]    0  0.000000    0.00000
+[2,]    0  0.957379   44.19266
+[3,]    0 44.192661 4700.86694</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We get the same as if we do</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFyKHgpXG5gYGAifQ== -->
+<pre class="r"><code>var(x)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdICAgICAgWywyXSAgICAgICBbLDNdXG5bMSxdICAgIDAgIDAuMDAwMDAwICAgIDAuMDAwMDBcblsyLF0gICAgMCAgMC45NTczNzkgICA0NC4xOTI2NlxuWzMsXSAgICAwIDQ0LjE5MjY2MSA0NzAwLjg2Njk0XG4ifQ== -->
+<pre><code>     [,1]      [,2]       [,3]
+[1,]    0  0.000000    0.00000
+[2,]    0  0.957379   44.19266
+[3,]    0 44.192661 4700.86694</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IA0KICBodG1sX25vdGVib29rOiANCiAgICB0b2M6IHllcw0KLS0tDQoNCiMgV2VlayAxDQojIyBNYXRyaXggRGVyaXZhdGl2ZXMNCg0KSWYgd2Ugd2FudCB0byBleHBsYWluIGEgdmVjdG9yICR5X3tuIFx0aW1lcyAxfSQgd2l0aCAkWF97biBcdGltZXMgcH0kLCB3ZSBuZWVkIGEgdmVjdG9yICRcYmV0YV97cCBcdGltZXMgMX0kIHRoYXQgbWluaW1pemUgJCRcbFZlcnQgeV97biBcdGltZXMgMX0gLSBYX3tuIFx0aW1lcyBwfVxiZXRhX3twIFx0aW1lcyAxfSBcclZlcnQkJA0KQW5kIHRoZSBtaW5pbXVtIG9mIHRoaXMgZXhwcmVzc2lvbiBpcyAkJCBcaGF0e1xiZXRhfSA9ICh4XnR4KV57LTF9eF50eSAkJA0KDQojIyMgRXhhbXBsZQ0KYGBge3J9DQpkYXRhKG10Y2FycykNCmhlYWQobXRjYXJzKQ0KYGBgDQpXZSBkZWZpbmUgb3VyIHksIHggYW5kICRcYmV0YSQgdmFyaWFibGVzDQoNClwlXCpcJSBtYXRyaXggbXVsdGlwbGljYXRpb24NCg0Kc29sdmUoYSkgY2FsY3VsYXRlcyBpbnZlcnNlIG9mIGENCg0Kc29sdmUoYSxiKSBzb2x2ZXMgZXF1YXRpb24gYSAlKiUgeCA9IGINCg0KYGBge3J9DQp5ID0gbXRjYXJzJG1wZw0KeCA9IGNiaW5kKDEsbXRjYXJzJHd0LCBtdGNhcnMkaHApDQpiZXRhID0gc29sdmUodCh4KSAlKiUgeCkgJSolIHQoeCkgJSolIHkNCmJldGENCmBgYA0KV2UgY2FuIGNoZWNrIHRoYXQgd2Ugb2J0YWluIHRoZSBzYW1lIHZlY3RvciB0aGFuIGlmIHdlIHVzZSB0aGUgZnVuY3Rpb24gbG0NCmBgYHtyfQ0KY29lZihsbShtcGcgfiB3dCArIGhwLCBkYXRhID0gbXRjYXJzKSkNCmBgYA0KIyMgQ2VudGVyaW5nIGJ5IG1hdHJpeCBtdWx0aXBsaWNhdGlvbg0KTGV0ICRKX24kIGJlIGEgdmVjdG9yIGZ1bGwgb2YgMSBvZiBsZW5ndGggbi4gVGhlbiwgdGhlIG1hdHJpeCAkJCAoSSAtIEpfbihKX25edEpfbileey0xfUpfbl50KSA9IChJIC0gXGZyYWN7MX17bn1KX3tuIFx0aW1lcyBufSkgJCQgd2l0aCAkSl97biBcdGltZXMgbn0kIGEgbWF0cml4IGZ1bGwgb2YgMSwgbXVsdGlwbHlpbmcgJCQgKEkgLSBcZnJhY3sxfXtufUpfe24gXHRpbWVzIG59KVhfe24gXHRpbWVzIHB9ICQkIHdpbGwgbWVhbi1jZW50ZXIgdGhlIGNvbHVtbnMgb2YgWA0KDQojIyMgRXhhbXBsZQ0KDQpgYGB7cn0NCnkgPSBtdGNhcnMkbXBnDQp4ID0gY2JpbmQoMSxtdGNhcnMkd3QsIG10Y2FycyRocCkNCm4gPSBucm93KHgpDQpJID0gZGlhZyhyZXAoMSxuKSkNCkggPSBtYXRyaXgoMSxuLG4pL24NCnhjID0gKEktSCkgJSolIHgNCmBgYA0KDQpJZiB3ZSBjYWxjdWxhdGUgdGhlIG1lYW4gYnkgY29sdW1ucyB0aGVuIHdlIGdldCB6ZXJvcw0KDQpgYGB7cn0NCmFwcGx5KHhjLDIsbWVhbikNCmBgYA0KU2FtZSB0aGluZyB0aGUgb3RoZXIgd2F5IGFyb3VuZA0KDQpgYGB7cn0NCnkgPSBtdGNhcnMkbXBnDQp4ID0gY2JpbmQoMSxtdGNhcnMkd3QsIG10Y2FycyRocCkNCnAgPSAzDQpJID0gZGlhZyhyZXAoMSxwKSkNCkggPSBtYXRyaXgoMSxwLHApL3ANCnhjID0geCAlKiUoSS1IKSANCmFwcGx5KHhjLDEsbWVhbikNCmBgYA0KIE1vcmUgZWZmaWNpZW50IHdheSB1c2luZyBmdW5jdGlvbiBzd2VlcA0KIA0KYGBge3J9DQp4YzIgPSBzd2VlcCh4LDIsYXBwbHkoeCwyLG1lYW4pKQ0KYXBwbHkoeGMyLDIsbWVhbikNCmBgYA0KIA0KIA==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IA0KICBodG1sX25vdGVib29rOiANCiAgICB0b2M6IHllcw0KLS0tDQoNCiMgV2VlayAxDQojIyBNYXRyaXggRGVyaXZhdGl2ZXMNCg0KSWYgd2Ugd2FudCB0byBleHBsYWluIGEgdmVjdG9yICR5X3tuIFx0aW1lcyAxfSQgd2l0aCAkWF97biBcdGltZXMgcH0kLCB3ZSBuZWVkIGEgdmVjdG9yICRcYmV0YV97cCBcdGltZXMgMX0kIHRoYXQgbWluaW1pemUgJCRcbFZlcnQgeV97biBcdGltZXMgMX0gLSBYX3tuIFx0aW1lcyBwfVxiZXRhX3twIFx0aW1lcyAxfSBcclZlcnQkJA0KQW5kIHRoZSBtaW5pbXVtIG9mIHRoaXMgZXhwcmVzc2lvbiBpcyAkJCBcaGF0e1xiZXRhfSA9ICh4XnR4KV57LTF9eF50eSAkJA0KDQojIyMgRXhhbXBsZQ0KYGBge3J9DQpkYXRhKG10Y2FycykNCmhlYWQobXRjYXJzKQ0KYGBgDQpXZSBkZWZpbmUgb3VyIHksIHggYW5kICRcYmV0YSQgdmFyaWFibGVzDQoNClwlXCpcJSBtYXRyaXggbXVsdGlwbGljYXRpb24NCg0Kc29sdmUoYSkgY2FsY3VsYXRlcyBpbnZlcnNlIG9mIGENCg0Kc29sdmUoYSxiKSBzb2x2ZXMgZXF1YXRpb24gYSAlKiUgeCA9IGINCg0KYGBge3J9DQp5ID0gbXRjYXJzJG1wZw0KeCA9IGNiaW5kKDEsbXRjYXJzJHd0LCBtdGNhcnMkaHApDQpiZXRhID0gc29sdmUodCh4KSAlKiUgeCkgJSolIHQoeCkgJSolIHkNCmJldGENCmBgYA0KV2UgY2FuIGNoZWNrIHRoYXQgd2Ugb2J0YWluIHRoZSBzYW1lIHZlY3RvciB0aGFuIGlmIHdlIHVzZSB0aGUgZnVuY3Rpb24gbG0NCmBgYHtyfQ0KY29lZihsbShtcGcgfiB3dCArIGhwLCBkYXRhID0gbXRjYXJzKSkNCmBgYA0KIyMgQ2VudGVyaW5nIGJ5IG1hdHJpeCBtdWx0aXBsaWNhdGlvbg0KTGV0ICRKX24kIGJlIGEgdmVjdG9yIGZ1bGwgb2YgMSBvZiBsZW5ndGggbi4gVGhlbiwgdGhlIG1hdHJpeCAkJCAoSSAtIEpfbihKX25edEpfbileey0xfUpfbl50KSA9IChJIC0gXGZyYWN7MX17bn1KX3tuIFx0aW1lcyBufSkgJCQgd2l0aCAkSl97biBcdGltZXMgbn0kIGEgbWF0cml4IGZ1bGwgb2YgMSwgbXVsdGlwbHlpbmcgJCQgKEkgLSBcZnJhY3sxfXtufUpfe24gXHRpbWVzIG59KVhfe24gXHRpbWVzIHB9ICQkIHdpbGwgbWVhbi1jZW50ZXIgdGhlIGNvbHVtbnMgb2YgWA0KDQojIyMgRXhhbXBsZQ0KDQpgYGB7cn0NCnkgPSBtdGNhcnMkbXBnDQp4ID0gY2JpbmQoMSxtdGNhcnMkd3QsIG10Y2FycyRocCkNCm4gPSBucm93KHgpDQpJID0gZGlhZyhyZXAoMSxuKSkNCkggPSBtYXRyaXgoMSxuLG4pL24NCnhjID0gKEktSCkgJSolIHgNCmBgYA0KDQpJZiB3ZSBjYWxjdWxhdGUgdGhlIG1lYW4gYnkgY29sdW1ucyB0aGVuIHdlIGdldCB6ZXJvcw0KDQpgYGB7cn0NCmFwcGx5KHhjLDIsbWVhbikNCmBgYA0KU2FtZSB0aGluZyB0aGUgb3RoZXIgd2F5IGFyb3VuZA0KDQpgYGB7cn0NCnkgPSBtdGNhcnMkbXBnDQp4ID0gY2JpbmQoMSxtdGNhcnMkd3QsIG10Y2FycyRocCkNCnAgPSAzDQpJID0gZGlhZyhyZXAoMSxwKSkNCkggPSBtYXRyaXgoMSxwLHApL3ANCnhjID0geCAlKiUoSS1IKSANCmFwcGx5KHhjLDEsbWVhbikNCmBgYA0KIE1vcmUgZWZmaWNpZW50IHdheSB1c2luZyBmdW5jdGlvbiBzd2VlcA0KIA0KYGBge3J9DQp4YzIgPSBzd2VlcCh4LDIsYXBwbHkoeCwyLG1lYW4pKQ0KYXBwbHkoeGMyLDIsbWVhbikNCmBgYA0KIyMgVmFyaWFuY2UgdmlhIG1hdHJpeCBtdWx0aXBsaWNhdGlvbg0KIA0KJCQgU14yID0gXGZyYWN7XHN1bSh5X2ktXGJhcnt5fSleMn17bi0xfSA9IFxmcmFje1xsVmVydCB5IC0gXGJhcnt5fUpfbiBcclZlcnReMn17bi0xfSA9IFxmcmFjezF9e24tMX1cdGlsZGV7eX1edFx0aWxkZXt5fSAkJCB3aGVyZSAkXHRpbGRle3l9PShJIC0gSl9uKEpfbl50Sl9uKV57LTF9Sl9uXnQpeSQNCg0KVGhlbiAkJCBTXjIgPSB5XnQoSSAtIEpfbihKX25edEpfbil5ICQkDQoNCklmIHdlIGRvIGl0IHdpdGggJFhfe24gXHRpbWVzIHB9JCB0aGVuICQkIFhedChJIC0gSl9uKEpfbl50Sl9uKVggPSBcdGlsZGV7WH1edFx0aWxkZXtYfSAkJA0KDQphbmQgJFxmcmFjezF9e24tMX1cdGlsZGV7WH1edFx0aWxkZXtYfSBpcyB0aGUgc28gY2FsbGVkIHZhcmlhbmNlLWNvdmFyaWFuY2UgbWF0cml4Lg0KDQojIyMgRXhhbXBsZQ0KYGBge3J9DQp5ID0gbXRjYXJzJG1wZw0KeCA9IGNiaW5kKDEsbXRjYXJzJHd0LCBtdGNhcnMkaHApDQpuID0gbnJvdyh4KQ0KSSA9IGRpYWcocmVwKDEsbikpDQpIID0gbWF0cml4KDEsbixuKS9uDQpyb3VuZCh0KHgpICUqJSAoSS1IKSAlKiUgeCAvIChuLTEpLDYpDQpgYGANCldlIGdldCB0aGUgc2FtZSBhcyBpZiB3ZSBkbw0KYGBge3J9DQp2YXIoeCkNCmBgYA0KDQoNCg==</div>
 
 
 
