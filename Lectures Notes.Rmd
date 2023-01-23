@@ -34,5 +34,41 @@ We can check that we obtain the same vector than if we use the function lm
 ```{r}
 coef(lm(mpg ~ wt + hp, data = mtcars))
 ```
+## Centering by matrix multiplication
+Let $J_n$ be a vector full of 1 of length n. Then, the matrix $$ (I - J_n(J_n^tJ_n)^{-1}J_n^t) = (I - \frac{1}{n}J_{n \times n}) $$ with $J_{n \times n}$ a matrix full of 1, multiplying $$ (I - \frac{1}{n}J_{n \times n})X_{n \times p} $$ will mean-center the columns of X
 
+### Example
+
+```{r}
+y = mtcars$mpg
+x = cbind(1,mtcars$wt, mtcars$hp)
+n = nrow(x)
+I = diag(rep(1,n))
+H = matrix(1,n,n)/n
+xc = (I-H) %*% x
+```
+
+If we calculate the mean by columns then we get zeros
+
+```{r}
+apply(xc,2,mean)
+```
+Same thing the other way around
+
+```{r}
+y = mtcars$mpg
+x = cbind(1,mtcars$wt, mtcars$hp)
+p = 3
+I = diag(rep(1,p))
+H = matrix(1,p,p)/p
+xc = x %*%(I-H) 
+apply(xc,1,mean)
+```
+ More efficient way using function sweep
+ 
+```{r}
+xc2 = sweep(x,2,apply(x,2,mean))
+apply(xc2,2,mean)
+```
+ 
  
