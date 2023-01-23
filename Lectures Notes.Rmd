@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: 
+  html_notebook: 
+    toc: yes
+---
+
+# Week 1
+## Matrix Derivatives
+
+If we want to explain a vector $y_{n \times 1}$ with $X_{n \times p}$, we need a vector $\beta_{p \times 1}$ that minimize $$\lVert y_{n \times 1} - X_{n \times p}\beta_{p \times 1} \rVert$$
+And the minimum of this expression is $$ \hat{\beta} = (x^tx)^{-1}x^ty $$
+
+### Example
+```{r}
+data(mtcars)
+head(mtcars)
+```
+We define our y, x and $\beta$ variables
+
+\%\*\% matrix multiplication
+
+solve(a) calculates inverse of a
+
+solve(a,b) solves equation a %*% x = b
+
+```{r}
+y = mtcars$mpg
+x = cbind(1,mtcars$wt, mtcars$hp)
+beta = solve(t(x) %*% x) %*% t(x) %*% y
+beta
+```
+We can check that we obtain the same vector than if we use the function lm
+```{r}
+coef(lm(mpg ~ wt + hp, data = mtcars))
+```
+
+ 
