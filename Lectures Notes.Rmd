@@ -93,5 +93,28 @@ We get the same as if we do
 ```{r}
 var(x)
 ```
+## Regression to the Origin
 
+Having only one predictor, it means, $X_{n \times 1}$ the value of $\beta$ that minimize  $\lVert y_{n \times 1} - X_{n \times 1}\beta_{p \times 1} \rVert$ is $$ \hat{\beta}=\frac{<y,x>}{<x,x>}$$
+It takes the line that going through the origin best fit the data. But in order to do that we have to have the data centered. So to do that we need to transform $x$ and $y$: $$ \tilde{y} =  (I - J_n(J_n^tJ_n)^{-1}J_n^t)y$$
+$$ \tilde{x} =  (I - J_n(J_n^tJ_n)^{-1}J_n^t)x$$
+So the value that minimize $\lVert \tilde{y}_{n \times 1} - \tilde{X}_{n \times 1}\gamma_{p \times 1} \rVert$ is $$\hat{\gamma}=\frac{\hat{\rho}_{xy}\hat{\sigma}_y}{\hat{\sigma}_x} $$ with $\hat{\rho}_{xy}$ the empirical correlation.
+
+```{r}
+library(UsingR)
+data(diamond)
+y = diamond$price
+x = diamond$carat
+yc = y - mean(y)
+xc = x - mean(x)
+sum(yc*xc)/sum(xc*xc)
+```
+Same value that if we do 
+```{r}
+lm(yc~xc -1)
+```
+And same value if we do
+```{r}
+cor(y,x)*sd(y)/sd(x)
+```
 
