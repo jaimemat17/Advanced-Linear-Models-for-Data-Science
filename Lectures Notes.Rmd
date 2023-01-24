@@ -117,4 +117,72 @@ And same value if we do
 ```{r}
 cor(y,x)*sd(y)/sd(x)
 ```
+## Connection with linear regression
 
+We want to minimize $$ \lVert y_{n \times 1} - (\beta_0J_n + \beta_1X_{n \times 1}) \rVert $$
+And the values that minimizes that equation are $$ \hat{\beta}_1 = \hat{\rho}_{yx}\frac{\hat{\sigma}_y}{\hat{\sigma}_x} \quad \hat{\beta}_0 = \bar{y}-\hat{\beta}_1\bar{x} $$
+
+```{r}
+library(UsingR)
+data(diamond)
+y = diamond$price
+x = diamond$carat
+yc = y - mean(y)
+xc = x - mean(x)
+```
+
+We can use lm function
+
+```{r}
+lm(y ~ x)
+plot(y ~ x)
+abline(lm(y~x))
+```
+We get the same if we do
+```{r}
+beta1 = cor(y,x)*sd(y)/sd(x)
+beta0 = mean(y) - beta1*mean(x)
+beta1
+beta0
+```
+
+## Prediction
+
+$$ \hat{y} = \hat{\beta_0}J_n + \hat{\beta_1}X $$
+```{r}
+yhat = beta0 + beta1*x
+yhat
+```
+And the sum of the squared residuals
+```{r}
+sum((y-yhat)^2)
+```
+With the lm function it would be
+```{r}
+fit = lm(y~x)
+predict(fit)
+```
+
+## Residuals
+$$ y - \hat{y} = y - \hat{\beta_0}J_n - \hat{\beta_1}X = e $$
+```{r}
+e = y - yhat
+e
+resid(fit)
+```
+
+A good plot is to plot the predictor over the residuals. Remember to do a residual plot and whenever you are looking at a residual plot, you are trying to find any sort of systematic patterns.
+
+```{r}
+plot(x,e)
+abline(h=0)
+```
+
+## Generalization
+
+```{r}
+t = seq(0,1, length = 1000)
+y = t + 2*t^2
+x=t
+lm(y ~ x - 1)
+```
