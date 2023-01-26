@@ -204,4 +204,24 @@ We get the same than with lm. The NA in x1 is because we have include into x a c
 ```{r}
 lm(y~x)
 ```
+## Week 6 QUIZ
+
+Consider the mtcars dataset. Fit a model that includes a group effect for vs and wt as predictors and mpg as the outcome. The vs variable is 1 for V type engines and 0 for straight. What is the estimate for the change in intercept for the mpg versus wt line going from vs = 1 minus vs = 0? Fit the model without using lm.  
+
+```{r}
+data(mtcars)
+x1 = mtcars$wt[mtcars$vs==1]
+x1c = x1 - mean(x1)
+x2 = mtcars$wt[mtcars$vs==0]
+x2c = x2 - mean(x2)
+y1 = mtcars$mpg[mtcars$vs==1]
+y1c = y1 - mean(y1)
+y2 = mtcars$mpg[mtcars$vs==0]
+y2c = y2 - mean(y2)
+beta1 = (y1c %*% x1c)/(x1c %*% x1c)
+beta2 = (y2c %*% x2c)/(x2c %*% x2c)
+p = sum(x1c**2)/(sum(x1c**2)+sum(x2c**2))
+beta = p*beta1 + (1-p)*beta2
+mean(y1) - mean(y2) - (mean(x1)*beta - mean(x2)*beta)
+```
 
