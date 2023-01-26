@@ -186,3 +186,22 @@ y = t + 2*t^2
 x=t
 lm(y ~ x - 1)
 ```
+## Least squares
+
+We want to minimize $\lVert y_{n \times 1} - X_{n \times p}\beta_{p\times 1} \rVert$ being $p \leq n$ and full column rank. The value of $\beta$ that minimizes this equation is $$ \hat{\beta} = (X^tX)^{-1}X^ty $$
+
+```{r}
+data("swiss")
+head(swiss)
+```
+```{r}
+x = as.matrix(cbind(1,swiss[,-1]))
+y = swiss$Fertility
+beta=solve(t(x)%*%x) %*% t(x) %*% y
+beta
+```
+We get the same than with lm. The NA in x1 is because we have include into x a column of 1 to be able to do it manually.
+```{r}
+lm(y~x)
+```
+
