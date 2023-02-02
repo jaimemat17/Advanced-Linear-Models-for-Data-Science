@@ -247,3 +247,60 @@ summary(lm(y~u))$r.squared
 summary(lm(y~x))$r.squared
 ```
 
+## Confidence intervals for regression coefficients
+
+First let's see the coefficient table
+
+```{r}
+data(swiss)
+fit = lm(Fertility ~ ., data = swiss)
+round(summary(fit)$coef,3)
+```
+
+Now let's do it manually 
+
+```{r}
+x = cbind(1,as.matrix(swiss[,-1]))
+y = swiss$Fertility
+beta = solve(t(x)%*%x ,t(x) %*% y)
+e = y - x %*% beta
+n = nrow(x)
+p = ncol(x)
+s = sqrt(sum(e^2)/(n-p))
+
+```
+
+Comparing with lm
+
+```{r}
+c(s, summary(fit)$sigma)
+```
+Now we calculate the t statistics and shows that it agree with lm
+
+```{r}
+betaVar = solve(t(x) %*% x)*s^2
+cbind(summary(fit)$coef[,2], sqrt(diag(betaVar)))
+tstat = beta/sqrt(diag(betaVar))
+cbind(summary(fit)$coef[,3], tstat)
+```
+Now let's see that the P-value agree
+
+```{r}
+cbind(summary(fit)$coef[,4], 2*pt(-abs(tstat),n-p))
+```
+Next we are going to calculate the F statistic
+
+```{r}
+k = cbind(0, diag(rep(1,p-1)))
+kvar = k %*% solve(t(x) %*% x) %*% t(k)
+fstat = t(k %*% beta) %*% solve(kvar) %*% (k %*% beta) / (p-1) / s^2
+cbind(summary(fit)$fstat, fstat)
+pf(fstat, p-1,n-p,lower.tail = F)
+```
+
+## Prediction intervals
+
+```{r}
+fit = lm (mpg ~ hp + wt, data = mtcars)
+```
+
