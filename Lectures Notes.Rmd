@@ -301,6 +301,61 @@ pf(fstat, p-1,n-p,lower.tail = F)
 ## Prediction intervals
 
 ```{r}
+data("mtcars")
 fit = lm (mpg ~ hp + wt, data = mtcars)
+newcar = data.frame(hp = c(90), wt = c(2.2))
+predict(fit, newdata = newcar)
+predict(fit, newdata = newcar, interval = "confidence")
+predict(fit, newdata = newcar, interval = "prediction")
+```
+Manually
+
+```{r}
+library(dplyr)
+y = mtcars$mpg
+x = as.matrix(cbind(1, select(mtcars,hp,wt)))
+n = length(y)
+p = ncol(x)
+xtxinv = solve(t(x) %*% x)
+beta = xtxinv %*% t(x) %*% y
+x0 = c(1,90,2.2)
+yhat = x %*% beta
+e = y - yhat
+s = sqrt(sum(e^2/(n-p)))
+yhat0 = sum(x0*beta)
+yhat0
+```
+
+The confidence interval
+
+```{r}
+yhat0 + qt(c(0.025, 0.975), n-p)*s*sqrt(t(x0) %*% xtxinv %*% x0)
+```
+The prediction interval
+```{r}
+yhat0 + qt(c(0.025, 0.975), n-p)*s*sqrt(1+t(x0) %*% xtxinv %*% x0)
+```
+Just take into account if you want to estimate the prediction surface at a particular point, you want a confidence interval. And if you want to evaluate the prediction surface plus the natural variability that exists around that prediction surface. Make sure you do a prediction interval rather than a confidence interval.
+
+## Confidence ellipsoids
+
+```{r}
+fit = lm(mpg ~ disp + hp, mtcars)
+library(rgl)
+open3d()
+plot3d(ellipse3d(fit), col="red", alpha = .5, aspect = T)
+```
+Doing it directly
+
+```{r}
+beta = coef(fit)
+sigma = vcov(fit)
+n = nrow(mtcars)
+p = length(beta)
+
+A = sigma * (3*qf(.95,3,n-p))
+nms = names(beta)
+open3d()
+plot3d(ellipse3d(A,centre=beta,t=1), color = "blue", alpha=.5,aspect=T,xlabs=nms[1],ylabs=nms[2],zlab = nms[3])
 ```
 
