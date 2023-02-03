@@ -358,4 +358,21 @@ nms = names(beta)
 open3d()
 plot3d(ellipse3d(A,centre=beta,t=1), color = "blue", alpha=.5,aspect=T,xlabs=nms[1],ylabs=nms[2],zlab = nms[3])
 ```
+## Standarized residuals
+
+```{r}
+data(mtcars)
+y = mtcars$mpg
+x = cbind(1, mtcars$hp, mtcars$wt)
+n = nrow(x)
+p = ncol(x)
+hatmat = x %*% solve(t(x) %*% x) %*% t(x)
+residmat = diag(rep(1,n)) - hatmat
+e = residmat %*% y
+s = sqrt(sum(e^2)/(n-p))
+rstd = e / s / sqrt(diag(residmat))
+cbind(rstd,rstandard(lm(y ~ x - 1)))
+plot(predict(lm(y~x-1)),rstd)
+abline(h=0)
+```
 
