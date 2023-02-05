@@ -1,1 +1,1 @@
-# Advanced-Linear-Models-for-Data-Science-1-Least-Squares
+# Advanced-Linear-Models-for-Data-Science Courses 1 and 2
